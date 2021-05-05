@@ -5,7 +5,9 @@
  */
 package kumpulan_game_arcade;
 
+import java.awt.Color;
 import java.awt.Cursor;
+import javax.swing.JFrame;
 
 /**
  *
@@ -170,12 +172,21 @@ public class Main_menu extends javax.swing.JFrame {
     }//GEN-LAST:event_Btn_quitMouseExited
 
     private void Btn_startMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Btn_startMouseClicked
-        /*if(index_game == 0){
+        if(index_game == 0){
             //dispose();
             //instaniasi game snake
-            //snake.setVisible(true);
+            JFrame obj = new JFrame();
+            SnakeGame gp = new SnakeGame();
+
+            obj.setBounds(10, 10, 905, 700);
+            obj.setBackground(Color.BLACK);
+            obj.setResizable(false);
+            obj.setVisible(true);
+            obj.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            obj.setLocationRelativeTo(null);
+            obj.add(gp);
         }
-        if(index_game == 1){
+        /*if(index_game == 1){
             //dispose();
             //instaniasi game tetris
             //tetris.setVisible(true);
