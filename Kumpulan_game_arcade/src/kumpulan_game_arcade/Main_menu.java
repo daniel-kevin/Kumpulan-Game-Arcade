@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JFrame;
 import Pacman.Board_pacman;
+import Tetris.GameForm;
 
 /**
  *
@@ -51,6 +52,12 @@ public class Main_menu extends javax.swing.JFrame {
         Btn_start.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Btn_startMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                Btn_startMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                Btn_startMouseExited(evt);
             }
         });
         getContentPane().add(Btn_start, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 260, -1, 40));
@@ -111,7 +118,7 @@ public class Main_menu extends javax.swing.JFrame {
 
     private void Btn_arrow_rightMouseClicked(java.awt.event.MouseEvent evt) {                                             
         index_game++;
-        if(index_game > 3){
+        if(index_game > 2){
             index_game = 0;
         }
         if(index_game == 0){
@@ -123,15 +130,13 @@ public class Main_menu extends javax.swing.JFrame {
         if(index_game == 2){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/pacman_icon.png")));
         }
-        if(index_game == 3){
-            game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/space_invader_icon.png")));
-        }
+
     }                                            
 
     private void Btn_arrow_leftMouseClicked(java.awt.event.MouseEvent evt) {                                            
         index_game--;
         if(index_game < 0){
-            index_game = 3;
+            index_game = 2;
         }
         if(index_game == 0){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/snake_icon.png")));
@@ -142,9 +147,7 @@ public class Main_menu extends javax.swing.JFrame {
         if(index_game == 2){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/pacman_icon.png")));
         }
-        if(index_game == 3){
-            game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/space_invader_icon.png")));
-        }
+
     }                                           
 
     private void Btn_arrow_leftMouseEntered(java.awt.event.MouseEvent evt) {                                            
@@ -190,22 +193,27 @@ public class Main_menu extends javax.swing.JFrame {
             obj.setLocationRelativeTo(null);
             obj.add(gp);
         }
-        //if(index_game == 1){
-            //dispose();
-            //instaniasi game tetris
-            //tetris.setVisible(true);
-        //}
+        if(index_game == 1){
+            dispose();
+            GameForm gf = new GameForm();
+            gf.setVisible(true);
+            gf.startGame();
+        }
         if(index_game == 2){
             dispose();
             //instaniasi game pacman
-            Board_pacman.show_board();
-        }
-        /*if(index_game == 3){
-            //dispose();
-            //instaniasi game space invader
-            //space_invader.setVisible(true);
-        }*/
+            Board_pacman board = new Board_pacman();
+            board.show_board();
+        } 
     }                                      
+
+    private void Btn_startMouseEntered(java.awt.event.MouseEvent evt) {                                       
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }                                      
+
+    private void Btn_startMouseExited(java.awt.event.MouseEvent evt) {                                      
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }                                     
 
     /**
      * @param args the command line arguments
