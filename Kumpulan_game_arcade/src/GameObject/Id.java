@@ -10,7 +10,7 @@ package GameObject;
  * @author Daniel
  */
 
-//tags buat bedain entitas,tile,dll jadi beberapa jenis
+//tags buat bedain entitas,tile, dan point jadi beberapa jenis
 public enum Id {
-    player,wall,point,enemy,sp_point;
+    player,wall,point,enemy,sp_point,gate;
 }
