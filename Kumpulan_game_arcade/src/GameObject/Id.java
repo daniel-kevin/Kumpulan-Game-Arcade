@@ -12,5 +12,5 @@ package GameObject;
 
 //tags buat bedain entitas,tile,dll jadi beberapa jenis
 public enum Id {
-    player,wall,point,enemy;
+    player,wall,point,enemy,sp_point;
 }
