@@ -1,5 +1,6 @@
 package kumpulan_game_arcade;
 
+import GameObject.AudioPlayer;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,7 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -54,16 +62,29 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
     // starting values
     private int score = 0;
     private int moves = 0;
+    public static int highscore;//simpan highscore
     
     private ImageIcon titleImage;
+    
+    public static State game_state;//untuk menentukan state game
+    public int menu_pick_num = 0;//untuk cek pilihan mana yang dipilih saat di Menu screen
+    public AudioPlayer audioPlayer;//untuk play BGM
     
     public SnakeGame(){
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnable(false);
+        HighScore();//ambil highscore dari file
+        game_state = State.Game;//state diawal di set langsung ke game
+        audioPlayer = new AudioPlayer();
+        audioPlayer.PlayBGM("Snake BGM.wav");//play BGMnya snake
         timer = new Timer(delay, this);
         timer.start();
     }
+    //game state
+    public enum State{
+        Game,Game_Over,Menu,Help
+    };
     
     // main things
     /**
@@ -104,6 +125,7 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
         g.setColor(Color.white);
         g.setFont(new Font("arial", Font.PLAIN, 14));
         g.drawString("Scores : "+score,780,30);
+        g.drawString("High score :" + highscore, 30, 30);
         
         g.setColor(Color.white);
         g.setFont(new Font("arial", Font.PLAIN, 14));
@@ -145,13 +167,14 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
         }
         
         targetimage.paintIcon(this, g, targetxpos[xpos], targetypos[ypos]);
-        
+        //gameover
         for(int b = 1; b<lengthofsnake; b++){
             if(snakexlength[b] == snakexlength[0] && snakeylength[b] == snakeylength[0]){
                 right = false;
                 left = false;
                 up = false;
                 down = false;
+                game_state = State.Game_Over;
                 
                 g.setColor(Color.white);
                 g.setFont(new Font("arial", Font.BOLD, 50));
@@ -161,6 +184,36 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
                 g.setFont(new Font("arial", Font.BOLD, 20));
                 g.drawString("Space to RESTART", 350, 350);
             }
+        }
+        //kalau state menu screen menu akan ditampilkan
+        if(game_state == State.Menu){
+            menu(g);
+        }
+        //kalau state help screen help akan ditampilkan
+        if(game_state == State.Help){
+            help(g);
+        }
+        //kalau state gaem over
+        if(game_state == State.Game_Over){
+            //update highscore kalau current score lebih tinggi dari highscore saat sudah game over
+            if(score > highscore){
+                FileWriter fileWriter = null;
+                try {
+                    File high_score_file = new File("snake_score.txt");
+                    fileWriter = new FileWriter(high_score_file,false);
+                    fileWriter.write(Integer.toString(score));
+                    fileWriter.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    try {
+                        fileWriter.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            HighScore();//update variabel highscore
         }
         
         g.dispose();
@@ -173,66 +226,123 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(right == false && left == false && up == false && down == false)
+        if(right == false && left == false && up == false && down == false && game_state == State.Game_Over)
             if(e.getKeyCode() == KeyEvent.VK_SPACE){
                 moves = 0;
                 score = 0;
                 lengthofsnake = 3;
+                game_state = State.Game;//start jadi statenya game
                 repaint(); // keyword to repeat paint
         }
         
         // code for snake movement using arrow
         if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            moves++;
-            right = true;
-            if(!left){
+            //snake move kalau statenya game
+            if(game_state == State.Game){
+                moves++;
                 right = true;
-            }else{
-                right = false;
-                left = true;
+                if(!left){
+                 right = true;
+                }else{
+                    right = false;
+                    left = true;
+                }
+            
+                up = false;
+                down = false;
+            }
+            //kalau di menu arrow key untuk pilih dari beberapa pilihan yang ada
+            else if(game_state == State.Menu){
+                menu_pick_num++;
+                if(menu_pick_num > 2){
+                    menu_pick_num = 0;
+                    
+                }
+                repaint();
             }
             
-            up = false;
-            down = false;
         }
         if(e.getKeyCode() == KeyEvent.VK_LEFT){
-            moves++;
-            left = true;
-            if(!right){
+            if(game_state == State.Game){
+                moves++;
                 left = true;
-            }else{
-                left = false;
-                right = true;
+                if(!right){
+                    left = true;
+                }else{
+                    left = false;
+                    right = true;
+                }
+            
+                up = false;
+                down = false;
+            }
+            //untuk navigate di Menu screen
+            else if(game_state == State.Menu){
+                menu_pick_num--;
+                if(menu_pick_num < 0){
+                    menu_pick_num = 2;
+                    
+                }
+                repaint();
             }
             
-            up = false;
-            down = false;
         }
         if(e.getKeyCode() == KeyEvent.VK_UP){
-            moves++;
-            up = true;
-            if(!down){
+            if(game_state == State.Game){
+                moves++;
                 up = true;
-            }else{
-                up = false;
-                down = true;
-            }
+                if(!down){
+                    up = true;
+                }else{
+                    up = false;
+                    down = true;
+                }
             
-            left = false;
-            right = false;
+                left = false;
+                right = false;
+            }
         }
         if(e.getKeyCode() == KeyEvent.VK_DOWN){
-            moves++;
-            down = true;
-            if(!up){
+            if(game_state == State.Game){
+                moves++;
                 down = true;
-            }else{
-                down = false;
-                up = true;
+                if(!up){
+                    down = true;
+                }else{
+                    down = false;
+                    up = true;
+                }
+            
+                left = false;
+                right = false;
             }
             
-            left = false;
-            right = false;
+        }
+        //escape key untuk buka Menu
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+            game_state = State.Menu;
+            repaint();
+        }
+        //pilih dari options yang ada di screen Menu
+        if(e.getKeyCode() == KeyEvent.VK_ENTER){
+            if(game_state == State.Menu){
+                //continue
+                if(menu_pick_num == 0){
+                    game_state = State.Game;
+                }
+                //masuk ke help screen
+                if(menu_pick_num == 1){
+                    game_state = State.Help;
+                }
+                //quit (balik ke main menu)
+                if(menu_pick_num == 2){
+                    audioPlayer.stop();
+                    Main_menu.obj.dispose();
+                    Main_menu main_menu = new Main_menu();
+                    main_menu.setVisible(true);
+                }
+            }
+            repaint();
         }
     }
 
@@ -320,5 +430,86 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
 
     private void setFocusTraversalKeysEnable(boolean b) {
         
+    }
+    //Screen menu
+    public void menu(Graphics g){
+        //semua gerakan di stop
+        up = false;
+        down = false;
+        right = false;
+        left = false;
+        //menampilkan Options di menu
+        g.setColor(Color.white);
+        g.setFont(new Font("arial", Font.BOLD, 50));
+        g.drawString("Menu", 380, 300);
+        //Highlight sesuai menu yg dipilih
+        //(menu yang dipilih warna putih yang tidak dipilih warna abu gelap
+        if(menu_pick_num == 0){
+            g.drawRect(200, 350,100, 40);
+            g.setFont(new Font("arial",Font.BOLD,20));
+            g.drawString("Continue",210, 375);
+            g.setColor(Color.DARK_GRAY);
+            g.drawRect(390,350,100,40);
+            g.drawString("Help",420, 375);
+            g.drawRect(580, 350, 100, 40);
+            g.drawString("Quit",610, 375);
+        }
+        if(menu_pick_num == 1){
+            g.setColor(Color.DARK_GRAY);
+            g.drawRect(200, 350,100, 40);
+            g.setFont(new Font("arial",Font.BOLD,20));
+            g.drawString("Continue",210, 375);
+            g.setColor(Color.WHITE);
+            g.drawRect(390,350,100,40);
+            g.drawString("Help",420, 375);
+            g.setColor(Color.DARK_GRAY);
+            g.drawRect(580, 350, 100, 40);
+            g.drawString("Quit",610, 375);
+        }
+        if(menu_pick_num == 2){
+            g.setColor(Color.DARK_GRAY);
+            g.drawRect(200, 350,100, 40);
+            g.setFont(new Font("arial",Font.BOLD,20));
+            g.drawString("Continue",210, 375);
+            g.drawRect(390,350,100,40);
+            g.drawString("Help",420, 375);
+            g.setColor(Color.WHITE);
+            g.drawRect(580, 350, 100, 40);
+            g.drawString("Quit",610, 375);
+        }
+    }
+    //Screen help isinya sedikit penjelasan tentang gamenya
+    public void help(Graphics g){
+        g.setColor(Color.white);
+        g.setFont(new Font("arial", Font.BOLD, 50));
+        g.drawString("Help", 380, 300);
+        g.setFont(new Font("arial", Font.BOLD, 20));
+        g.drawString("Goalnya adalah memakan apel sebanyak - banyak ",200,330);
+        g.drawString("dan menghindari tabrakan dengan bagian tubuh ular",185,350);
+    }
+    //buat set isi dari variable highscore
+    public void HighScore(){
+        File high_score_file = new File("snake_score.txt");
+        String score;
+        if(!high_score_file.exists()){
+            try {
+                high_score_file.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            highscore = 0;
+        }
+        else{
+            try {
+                Scanner scanner = new Scanner(high_score_file);
+                    while(scanner.hasNextLine()){
+                        score = scanner.nextLine();
+                        highscore = Integer.parseInt(score);
+                    }
+                    scanner.close();
+                } catch (FileNotFoundException ex) {
+                Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
     }
 }
