@@ -5,6 +5,7 @@
  */
 package Pacman;
 
+import GameObject.AudioPlayer;
 import static Pacman.Board_pacman.SCALE;
 import static Pacman.Board_pacman.high_score;
 import java.awt.Color;
@@ -20,6 +21,11 @@ import kumpulan_game_arcade.Main_menu;
  */
 //Class untuk screen menu
 public class Menu extends MouseAdapter{
+    public AudioPlayer audioPlayer;
+    
+    public Menu(AudioPlayer audioPlayer){
+        this.audioPlayer = audioPlayer;
+    }
     //method yang dipanggil kalau mouse click sesuatu
     public void mousePressed(MouseEvent e){
         int mouseX = e.getX();
@@ -31,6 +37,7 @@ public class Menu extends MouseAdapter{
         //balik ke main menu jika pilih quit
         if(mouseOver(mouseX, mouseY,115,260, 160,60)){
             Board_pacman.game_state = Board_pacman.state.Game;
+            audioPlayer.stop();
             Board_pacman.isRunning = false;
             Board_pacman.frame.dispose();
             Main_menu main_menu = new Main_menu();
