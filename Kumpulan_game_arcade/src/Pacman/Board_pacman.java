@@ -5,6 +5,7 @@
  */
 package Pacman;
 
+import GameObject.AudioPlayer;
 import GameObject.Entity;
 import GameObject.Game_handler;
 import GameObject.Id;
@@ -52,6 +53,7 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
     public Menu menu;//untuk screen menu
     public Help help;//untuk screen help
     public GameOver gameOver;//untuk game over screen
+    public AudioPlayer audioPlayer;
     
     
     
@@ -72,9 +74,11 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
         handler = new Game_handler();
         player = new Player(180,220,15,15,Id.player,handler,this);
         addKeyListener(new Player_action());
-        menu = new Menu();
+        audioPlayer = new AudioPlayer();
+        menu = new Menu(audioPlayer);
         help = new Help();
-        gameOver = new GameOver();
+        gameOver = new GameOver(audioPlayer);
+        
         addMouseListener(menu);
         addMouseListener(help);
         addMouseListener(gameOver);
@@ -84,6 +88,7 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
         point_num = 185;
         game_ghost();
         HighScore();
+        audioPlayer.PlayBGM("Pacman BGM.wav");
     }
     
     private synchronized void start(){
@@ -664,8 +669,10 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
         for(int i = 0;i<handler.entities.size();i++){
                 Entity entities = handler.entities.get(i);
                 if(entities.getID() == Id.enemy){
-                    entities.setX(9*SCALE);
-                    entities.setY(9*SCALE);
+                    Ghost ghost = (Ghost) entities;
+                    ghost.setX(9*SCALE);
+                    ghost.setY(9*SCALE);
+                    ghost.weak = false;
                 }
             }
         game_points();
