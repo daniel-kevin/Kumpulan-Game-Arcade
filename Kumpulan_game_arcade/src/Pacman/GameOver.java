@@ -5,6 +5,7 @@
  */
 package Pacman;
 
+import GameObject.AudioPlayer;
 import GameObject.Game_handler;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,8 +20,15 @@ import kumpulan_game_arcade.Main_menu;
  */
 //Class untuk game over screen di game Pacman
 public class GameOver extends MouseAdapter{
+    public AudioPlayer audioPlayer;
+    public GameOver(AudioPlayer audioPlayer){
+        this.audioPlayer = audioPlayer;
+    }
+    
+
     //method yang akan dipanggil untuk menentukan
     //hal yang akan dilakukan jika mouse ditekan pada lokasi tertentu
+    
        public void mousePressed(MouseEvent e){
         int mouseX = e.getX();
         int mouseY = e.getY();
@@ -30,6 +38,7 @@ public class GameOver extends MouseAdapter{
         }
         if(mouseOver(mouseX, mouseY,105,190,180,60) && Board_pacman.game_state == Board_pacman.state.Game_over){
             Board_pacman.game_state = Board_pacman.state.Game;
+            audioPlayer.stop();
             Board_pacman.isRunning = false;
             Board_pacman.frame.dispose();
             Main_menu main_menu = new Main_menu();
