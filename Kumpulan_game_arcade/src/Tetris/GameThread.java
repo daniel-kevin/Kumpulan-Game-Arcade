@@ -1,11 +1,14 @@
 package Tetris;
 
+import GameObject.AudioPlayer;
+
 public class GameThread extends Thread{
     private GameArea ga;
     private GameForm gf;
     private int score;
     private int level = 1;
     private int scorePerLevel = 3;
+   public AudioPlayer audioPlayer;
     
     private int pause = 1000;
     private int speedupPerLevel = 100;
@@ -13,6 +16,7 @@ public class GameThread extends Thread{
     public GameThread(GameArea ga, GameForm gf){
         this.ga = ga;
         this.gf = gf;
+        gf.audioPlayer.PlayBGM("Tetris BGM.wav");
         
         gf.updateScore(score);
         gf.updateLevel(level);
