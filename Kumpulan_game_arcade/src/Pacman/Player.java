@@ -10,9 +10,10 @@ import GameObject.Game_handler;
 import GameObject.Id;
 import GameObject.Point;
 import GameObject.Tile;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -22,18 +23,20 @@ import java.awt.event.KeyEvent;
 //class playernya pacman inherit method method yang ada di class entity
 public class Player extends Entity{
     public int player_point = 0;//pointnya player bakal bertambah kalau makan point/berhasil makan ghost
-
-    public Player(int x, int y, int lebar, int tinggi, Id id, Game_handler handler) {
+    public Board_pacman game;
+    public Image sprite = new ImageIcon("src/PacmanImage/PacLeft1.png").getImage();//sprite pacman diawal
+    public int sprite_num = 0;//sprite yang dirender akan sesuai dengan sprite num dan arah gerak
+    public Player(int x, int y, int lebar, int tinggi, Id id, Game_handler handler,Board_pacman game) {
         super(x, y, lebar, tinggi, id, handler);
+        this.game = game;
         
     }
-    //buat sementara player direpresentasikan sebagai kotak warna kuning
+    //render sprite player 
     @Override
     public void render(Graphics g) {
-        g.setColor(Color.yellow);
-        g.fillRect(x, y, lebar,tinggi);
+        g.drawImage(sprite, x,y, null);
     }
-    
+    //update lokasi player
     @Override
     public void update() {
         this.x+=velX;
@@ -55,7 +58,7 @@ public class Player extends Entity{
         //collision detection player dengan wall
         for(int i = 0;i < handler.tiles.size();i++){
             Tile tiles = handler.tiles.get(i);
-            if(tiles.getID() == Id.wall){
+            if(tiles.getID() == Id.wall || tiles.getID() == Id.gate){
                 if(getBoundsBottom().intersects(tiles.getBounds())){
                     setVelY(0);
                     y = tiles.y - tinggi;
@@ -77,28 +80,132 @@ public class Player extends Entity{
         //collision detection player dengan point
         for(int i = 0;i < handler.points.size();i++){
             Point points = handler.points.get(i);
-            if(getBounds().intersects(points.getBounds())&&points.getID()==Id.point){
-                player_point += points.getPoint();
-                points.remove();
+            if(getBounds().intersects(points.getBounds())){
+                if(points.id == id.point){
+                    player_point += points.getPoint();
+                    points.remove();
+                    Board_pacman.point_num--; 
+                }
+                else if(points.id == id.sp_point){
+                    Special_Point sp = (Special_Point) points;
+                    player_point += points.getPoint();
+                    sp.WeakenGhost();//pakai method special point untuk mengubah state ghost jadi weak
+                    points.remove();
+                    Board_pacman.point_num--; //setiap ada point kemakan jumlah point di board dikurangi
+                    }
+                   
+                }
+                
             }
+        //collision detection dengan ghost
+        for(int i = 0;i < handler.entities.size();i++){
+            Entity entities = handler.entities.get(i);
+            if(getBounds().intersects(entities.getBounds())){
+                if(entities.id == id.enemy){
+                    Ghost ghost = (Ghost) entities;
+                    //cek statenya ghost
+                    if(ghost.IsWeak() == false){
+                        mati();
+                        Board_pacman.score = player_point;
+                        game.game_over();
+                    }
+                    if(ghost.IsWeak() == true){
+                        ghost.mati();
+                        player_point += ghost.getPoint();
+                        handler.addEntity(new Ghost(180,180,20,20,Id.enemy, handler,ghost.ghost_num));//ghost respawn
+                    }
+                }
+                    
+                }
+                
+            } 
         }
-        System.out.println("player point : " + player_point);//buat cek jumlah point(sementara pas fase testing)
-    }
-    //pergerakan player
+        
+    
+    //pergerakan player + ganti sprite
     public void keyPressed(KeyEvent e){
         int key = e.getKeyCode();
         
         if(key == KeyEvent.VK_UP){
             velY = -2;
+            if(sprite_num == 0){
+                sprite = new ImageIcon("src/PacmanImage/PacUp1.png").getImage();
+                sprite_num = 1;
+            }
+            else if(sprite_num == 1){
+                sprite = new ImageIcon("src/PacmanImage/PacUp2.png").getImage();
+                sprite_num = 2;
+            }
+            else if(sprite_num == 2){
+                sprite = new ImageIcon("src/PacmanImage/PacUp3.png").getImage();
+                sprite_num = 3;
+            }
+            else if(sprite_num == 3){
+                sprite = new ImageIcon("src/PacmanImage/PacUp2.png").getImage();
+                sprite_num = 0;
+            }
         }
         if(key == KeyEvent.VK_DOWN){
             velY = 2;
+            if(sprite_num == 0){
+                sprite = new ImageIcon("src/PacmanImage/PacDown1.png").getImage();
+                sprite_num = 1;
+            }
+            else if(sprite_num == 1){
+                sprite = new ImageIcon("src/PacmanImage/PacDown2.png").getImage();
+                sprite_num = 2;
+            }
+            else if(sprite_num == 2){
+                sprite = new ImageIcon("src/PacmanImage/PacDown3.png").getImage();
+                sprite_num = 3;
+            }
+            else if(sprite_num == 3){
+                sprite = new ImageIcon("src/PacmanImage/PacDown2.png").getImage();
+                sprite_num = 0;
+            }
         }
         if(key == KeyEvent.VK_RIGHT){
             velX = 2;
+            if(sprite_num == 0){
+                sprite = new ImageIcon("src/PacmanImage/PacRight1.png").getImage();
+                sprite_num = 1;
+            }
+            else if(sprite_num == 1){
+                sprite = new ImageIcon("src/PacmanImage/PacRight2.png").getImage();
+                sprite_num = 2;
+            }
+            else if(sprite_num == 2){
+                sprite = new ImageIcon("src/PacmanImage/PacRight3.png").getImage();
+                sprite_num = 3;
+            }
+            else if(sprite_num == 3){
+                sprite = new ImageIcon("src/PacmanImage/PacRight2.png").getImage();
+                sprite_num = 0;
+            }
+            
+            
         }
         if(key == KeyEvent.VK_LEFT){
             velX = -2;
+            if(sprite_num == 0){
+                sprite = new ImageIcon("src/PacmanImage/PacLeft1.png").getImage();
+                sprite_num = 1;
+            }
+            else if(sprite_num == 1){
+                sprite = new ImageIcon("src/PacmanImage/PacLeft2.png").getImage();
+                sprite_num = 2;
+            }
+            else if(sprite_num == 2){
+                sprite = new ImageIcon("src/PacmanImage/PacLeft3.png").getImage();
+                sprite_num = 3;
+            }
+            else if(sprite_num == 3){
+                sprite = new ImageIcon("src/PacmanImage/PacLeft2.png").getImage();
+                sprite_num = 0;
+            }
+        }
+        if(key == KeyEvent.VK_ESCAPE){
+            Board_pacman.game_state = Board_pacman.state.Menu;
         }
     }
     //kalau player berhenti

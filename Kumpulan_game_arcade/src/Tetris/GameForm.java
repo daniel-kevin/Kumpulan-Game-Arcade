@@ -1,5 +1,6 @@
 package Tetris;
 
+import GameObject.AudioPlayer;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -10,10 +11,12 @@ public class GameForm extends javax.swing.JFrame {
 
     private GameArea ga;
     private GameThread gt;
-     private static StartupForm sf;
+    private static StartupForm sf;
+    public AudioPlayer audioPlayer;
     
     public GameForm() {
         initComponents();
+        audioPlayer = new AudioPlayer();
         
         ga = new GameArea(gameAreaPlaceHolder, 10); // place holder untuk jpanel dan jumlah dari kolom map tetris 
         this.add(ga);   // memanggil jpanel GameArea ke JFrame
@@ -62,7 +65,8 @@ public class GameForm extends javax.swing.JFrame {
     
     // start thread 
     public void startGame(){
-        ga.initBackgroundArray();       // me-reset tampilan, score, dan level 
+        ga.initBackgroundArray(); 
+        sf = new StartupForm(audioPlayer);// me-reset tampilan, score, dan level 
         gt = new GameThread(ga, this);
         gt.start();
     }
@@ -78,7 +82,7 @@ public class GameForm extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         gameAreaPlaceHolder = new javax.swing.JPanel();
@@ -145,16 +149,16 @@ public class GameForm extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void btnMainMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainMenuActionPerformed
-        
+    private void btnMainMenuActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        audioPlayer.stop();
         gt.interrupt();         // stop latest thread 
         this.setVisible(false); 
-        Tetris.showStartup();   
+          
         sf.setVisible(true);
         
-    }//GEN-LAST:event_btnMainMenuActionPerformed
+    }                                           
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -186,11 +190,11 @@ public class GameForm extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btnMainMenu;
     private javax.swing.JPanel gameAreaPlaceHolder;
     private javax.swing.JLabel levelDisplay;
     private javax.swing.JLabel scoreDisplay;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
 }

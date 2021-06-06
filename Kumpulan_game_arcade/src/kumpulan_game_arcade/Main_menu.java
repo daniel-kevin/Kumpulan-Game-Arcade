@@ -5,10 +5,12 @@
  */
 package kumpulan_game_arcade;
 
+import GameObject.AudioPlayer;
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JFrame;
 import Pacman.Board_pacman;
+import Tetris.GameForm;
 
 /**
  *
@@ -17,10 +19,14 @@ import Pacman.Board_pacman;
 public class Main_menu extends javax.swing.JFrame {
 
     int index_game = 0;
+    public AudioPlayer audioPlayer;
+    public static JFrame obj;
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public Main_menu() {
         initComponents();
         this.setLocationRelativeTo(null);
+        audioPlayer = new AudioPlayer();
+        audioPlayer.PlayBGM("Main_Menu BGM.wav");
     }
 
     /**
@@ -34,7 +40,6 @@ public class Main_menu extends javax.swing.JFrame {
 
         jComboBox1 = new javax.swing.JComboBox<>();
         Btn_start = new javax.swing.JLabel();
-        Btn_settings = new javax.swing.JLabel();
         Btn_quit = new javax.swing.JLabel();
         Btn_arrow_left = new javax.swing.JLabel();
         Btn_arrow_right = new javax.swing.JLabel();
@@ -52,11 +57,14 @@ public class Main_menu extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Btn_startMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                Btn_startMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                Btn_startMouseExited(evt);
+            }
         });
         getContentPane().add(Btn_start, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 260, -1, 40));
-
-        Btn_settings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/settings_button.png"))); // NOI18N
-        getContentPane().add(Btn_settings, new org.netbeans.lib.awtextra.AbsoluteConstraints(335, 300, -1, 30));
 
         Btn_quit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/quit_button.png"))); // NOI18N
         Btn_quit.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -70,7 +78,7 @@ public class Main_menu extends javax.swing.JFrame {
                 Btn_quitMouseExited(evt);
             }
         });
-        getContentPane().add(Btn_quit, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 335, -1, 20));
+        getContentPane().add(Btn_quit, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 310, -1, 20));
 
         Btn_arrow_left.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/arrow_left_btn.png"))); // NOI18N
         Btn_arrow_left.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -111,7 +119,7 @@ public class Main_menu extends javax.swing.JFrame {
 
     private void Btn_arrow_rightMouseClicked(java.awt.event.MouseEvent evt) {                                             
         index_game++;
-        if(index_game > 3){
+        if(index_game > 2){
             index_game = 0;
         }
         if(index_game == 0){
@@ -123,15 +131,13 @@ public class Main_menu extends javax.swing.JFrame {
         if(index_game == 2){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/pacman_icon.png")));
         }
-        if(index_game == 3){
-            game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/space_invader_icon.png")));
-        }
+
     }                                            
 
     private void Btn_arrow_leftMouseClicked(java.awt.event.MouseEvent evt) {                                            
         index_game--;
         if(index_game < 0){
-            index_game = 3;
+            index_game = 2;
         }
         if(index_game == 0){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/snake_icon.png")));
@@ -142,9 +148,7 @@ public class Main_menu extends javax.swing.JFrame {
         if(index_game == 2){
             game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/pacman_icon.png")));
         }
-        if(index_game == 3){
-            game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/space_invader_icon.png")));
-        }
+
     }                                           
 
     private void Btn_arrow_leftMouseEntered(java.awt.event.MouseEvent evt) {                                            
@@ -177,9 +181,10 @@ public class Main_menu extends javax.swing.JFrame {
 
     private void Btn_startMouseClicked(java.awt.event.MouseEvent evt) {                                       
         if(index_game == 0){
+            audioPlayer.stop();
             dispose();
             //instaniasi game snake
-            JFrame obj = new JFrame();
+            obj = new JFrame();
             SnakeGame gp = new SnakeGame();
 
             obj.setBounds(10, 10, 905, 700);
@@ -190,22 +195,29 @@ public class Main_menu extends javax.swing.JFrame {
             obj.setLocationRelativeTo(null);
             obj.add(gp);
         }
-        //if(index_game == 1){
-            //dispose();
-            //instaniasi game tetris
-            //tetris.setVisible(true);
-        //}
+        if(index_game == 1){
+            audioPlayer.stop();
+            dispose();
+            GameForm gf = new GameForm();
+            gf.setVisible(true);
+            gf.startGame();
+        }
         if(index_game == 2){
+            audioPlayer.stop();
             dispose();
             //instaniasi game pacman
-            Board_pacman.show_board();
-        }
-        /*if(index_game == 3){
-            //dispose();
-            //instaniasi game space invader
-            //space_invader.setVisible(true);
-        }*/
+            Board_pacman board = new Board_pacman();
+            board.show_board();
+        } 
     }                                      
+
+    private void Btn_startMouseEntered(java.awt.event.MouseEvent evt) {                                       
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }                                      
+
+    private void Btn_startMouseExited(java.awt.event.MouseEvent evt) {                                      
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }                                     
 
     /**
      * @param args the command line arguments
@@ -233,6 +245,7 @@ public class Main_menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new Main_menu().setVisible(true);
+            
         });
     }
 
@@ -241,7 +254,6 @@ public class Main_menu extends javax.swing.JFrame {
     private javax.swing.JLabel Btn_arrow_left;
     private javax.swing.JLabel Btn_arrow_right;
     private javax.swing.JLabel Btn_quit;
-    private javax.swing.JLabel Btn_settings;
     private javax.swing.JLabel Btn_start;
     private javax.swing.JLabel game_icon;
     private javax.swing.JComboBox<String> jComboBox1;

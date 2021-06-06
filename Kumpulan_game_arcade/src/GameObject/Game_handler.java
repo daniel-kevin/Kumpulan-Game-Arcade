@@ -7,6 +7,7 @@ package GameObject;
 
 import java.awt.Graphics;
 import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -15,20 +16,21 @@ import java.util.LinkedList;
 //game handler isinya list entitas,tile,dan point
 //kalau mau menambahkan entitas,point atau tile bakal ditambahin ke list disini
 public class Game_handler {
-    public LinkedList<Entity> entities = new LinkedList<Entity>();
+    public CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<Entity>();
     public LinkedList<Tile> tiles = new LinkedList<Tile>();
     public LinkedList<Point> points = new LinkedList<Point>();
     //buat manggil method render dari semua entity,tile,dan point yang ada dalam list
     public void render(Graphics g){
+        for(Point point:points){
+            point.render(g);
+        }
         for(Entity entity:entities){
             entity.render(g);
         }
         for(Tile tile:tiles){
             tile.render(g);
         }
-        for(Point point:points){
-            point.render(g);
-        }
+
     }
     //buat manggil method update semua entitas,tile,dan point yang ada dilist
     public void update(){
