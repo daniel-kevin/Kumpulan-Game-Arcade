@@ -45,7 +45,7 @@ public class Special_Point extends Point{
             if(entity.id == Id.enemy){
                 Ghost ghost = (Ghost) entity;
                 ghost.weak = true;
-                ghost.recov_counter = 600;
+                ghost.recov_counter = 300;
             }
         }
     }
