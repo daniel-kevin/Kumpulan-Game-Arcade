@@ -1,5 +1,6 @@
 package Tetris;
 
+import GameObject.AudioPlayer;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -11,9 +12,11 @@ public class GameForm extends javax.swing.JFrame {
     private GameArea ga;
     private GameThread gt;
     private static StartupForm sf;
+    public AudioPlayer audioPlayer;
     
     public GameForm() {
         initComponents();
+        audioPlayer = new AudioPlayer();
         
         ga = new GameArea(gameAreaPlaceHolder, 10); // place holder untuk jpanel dan jumlah dari kolom map tetris 
         this.add(ga);   // memanggil jpanel GameArea ke JFrame
@@ -63,7 +66,7 @@ public class GameForm extends javax.swing.JFrame {
     // start thread 
     public void startGame(){
         ga.initBackgroundArray(); 
-        sf = new StartupForm();// me-reset tampilan, score, dan level 
+        sf = new StartupForm(audioPlayer);// me-reset tampilan, score, dan level 
         gt = new GameThread(ga, this);
         gt.start();
     }
@@ -149,10 +152,10 @@ public class GameForm extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void btnMainMenuActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        
+        audioPlayer.stop();
         gt.interrupt();         // stop latest thread 
         this.setVisible(false); 
-        Tetris.showStartup();   
+          
         sf.setVisible(true);
         
     }                                           
