@@ -31,11 +31,11 @@ public class Menu extends MouseAdapter{
         int mouseX = e.getX();
         int mouseY = e.getY();
         //balik ke game jika pilih continue
-        if(mouseOver(mouseX, mouseY,95,110,200,70)){
+        if(mouseOver(mouseX, mouseY,95,110,200,70) && Board_pacman.game_state == Board_pacman.state.Menu){
             Board_pacman.game_state = Board_pacman.state.Game;
         }
         //balik ke main menu jika pilih quit
-        if(mouseOver(mouseX, mouseY,115,260, 160,60)){
+        if(mouseOver(mouseX, mouseY,115,260, 160,60) && Board_pacman.game_state == Board_pacman.state.Menu){
             Board_pacman.game_state = Board_pacman.state.Game;
             audioPlayer.stop();
             Board_pacman.isRunning = false;

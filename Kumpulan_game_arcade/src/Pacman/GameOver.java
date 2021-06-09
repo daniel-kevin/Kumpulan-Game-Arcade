@@ -33,7 +33,7 @@ public class GameOver extends MouseAdapter{
         int mouseX = e.getX();
         int mouseY = e.getY();
         
-        if(mouseOver(mouseX, mouseY,95,110, 200,70)){
+        if(mouseOver(mouseX, mouseY,95,110, 200,70) && Board_pacman.game_state == Board_pacman.state.Game_over){
             Board_pacman.game_state = Board_pacman.state.Game;
         }
         if(mouseOver(mouseX, mouseY,105,190,180,60) && Board_pacman.game_state == Board_pacman.state.Game_over){
