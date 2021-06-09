@@ -25,14 +25,14 @@ public class Help extends MouseAdapter{
         int mouseX = e.getX();
         int mouseY = e.getY();
         
-        if(mouseOver(mouseX, mouseY,295,370,75,40)){
+        if(mouseOver(mouseX, mouseY,295,370,75,40) && Board_pacman.game_state == Board_pacman.state.Help){
             page++;//kalau next page, pagenya numbernya diincrement
             //kalau udah sampai page terakhir balik ke page awal
             if(page > 4){
                 page = 1;
             }
         }
-        if(mouseOver(mouseX, mouseY,5,370,75,40)){
+        if(mouseOver(mouseX, mouseY,5,370,75,40) && Board_pacman.game_state == Board_pacman.state.Help){
             page--;//kalau click previous bakal mundur 1 page
             //kalau udah sampai page pertama balik ke page terakhir
             if(page < 1){
@@ -40,7 +40,7 @@ public class Help extends MouseAdapter{
             }
         }
         //kalau pilih back to menu
-        if(mouseOver(mouseX, mouseY,135,405,105,19)){
+        if(mouseOver(mouseX, mouseY,135,405,105,19) && Board_pacman.game_state == Board_pacman.state.Help){
             Board_pacman.game_state = Board_pacman.state.Menu;
         }
     }
