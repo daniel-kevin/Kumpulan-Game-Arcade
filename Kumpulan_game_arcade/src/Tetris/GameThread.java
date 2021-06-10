@@ -39,7 +39,9 @@ public class GameThread extends Thread{
             }
             
             if(ga.isBlockOutOfBounds()){
-                // show game over with JOptionPane 
+                // show game over with JOptionPane
+                gf.audioPlayer.stop();
+                gf.dispose();
                 Tetris.gameOver(score);
                 break;
             }
