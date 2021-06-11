@@ -20,6 +20,7 @@ public class Main_menu extends javax.swing.JFrame {
 
     int index_game = 0;
     public AudioPlayer audioPlayer;
+    public static Boolean isBestScoreFrameOpen = false;
     public static JFrame obj;
     @SuppressWarnings("OverridableMethodCallInConstructor")
     public Main_menu() {
@@ -44,6 +45,7 @@ public class Main_menu extends javax.swing.JFrame {
         Btn_arrow_left = new javax.swing.JLabel();
         Btn_arrow_right = new javax.swing.JLabel();
         game_icon = new javax.swing.JLabel();
+        btn_trophy = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -110,6 +112,14 @@ public class Main_menu extends javax.swing.JFrame {
 
         game_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/snake_icon.png"))); // NOI18N
         getContentPane().add(game_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 130, 130));
+
+        btn_trophy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/Trophy.png"))); // NOI18N
+        btn_trophy.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btn_trophyMouseClicked(evt);
+            }
+        });
+        getContentPane().add(btn_trophy, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 360, -1, -1));
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/main_menu_bg.jpeg"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 430));
@@ -219,6 +229,14 @@ public class Main_menu extends javax.swing.JFrame {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }                                     
 
+    private void btn_trophyMouseClicked(java.awt.event.MouseEvent evt) {                                        
+        if(isBestScoreFrameOpen == false){
+            BestScoreFrame bsf = new BestScoreFrame();
+            bsf.showFrame();
+            isBestScoreFrameOpen = true;
+        }
+    }                                       
+
     /**
      * @param args the command line arguments
      */
@@ -255,6 +273,7 @@ public class Main_menu extends javax.swing.JFrame {
     private javax.swing.JLabel Btn_arrow_right;
     private javax.swing.JLabel Btn_quit;
     private javax.swing.JLabel Btn_start;
+    private javax.swing.JLabel btn_trophy;
     private javax.swing.JLabel game_icon;
     private javax.swing.JComboBox<String> jComboBox1;
     // End of variables declaration                   
