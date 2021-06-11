@@ -25,7 +25,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Period;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -54,6 +57,7 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
     public Help help;//untuk screen help
     public GameOver gameOver;//untuk game over screen
     public AudioPlayer audioPlayer;
+    public Date startTime;
     
     
     
@@ -193,6 +197,7 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
        init();
        requestFocus();
        long lastTime = System.nanoTime();
+       startTime = new Date();
        double delta = 0;
        double ns = 1000000000/60;
        while(isRunning == true){
@@ -635,6 +640,11 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
     //saat ghost tidak dalam weak state
     public void game_over(){
         game_state = state.Game_over;
+        Date endTime = new Date();
+        long total_game_time = endTime.getTime() - startTime.getTime();
+        long t_game_h = total_game_time/(60 * 60 * 1000) % 24;
+        long t_game_m = total_game_time/(60 * 1000) % 60;
+        long t_game_s = total_game_time/1000 % 60;
         for(int i = 0;i < handler.entities.size();i++){
                 Entity entities = handler.entities.get(i);
                     handler.entities.clear();
@@ -655,7 +665,7 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
             try {
                 File high_score_file = new File("pacman_score.txt");
                 FileWriter fileWriter = new FileWriter(high_score_file,false);
-                fileWriter.write(Integer.toString(score));
+                fileWriter.write(Integer.toString(score)+"\n"+t_game_h+"\n"+t_game_m+"\n"+t_game_s);
                 fileWriter.close();
             } catch (IOException ex) {
                 Logger.getLogger(Board_pacman.class.getName()).log(Level.SEVERE, null, ex);
@@ -697,10 +707,8 @@ public class Board_pacman extends Canvas implements Runnable, ActionListener{
         else{
             try {
                 Scanner scanner = new Scanner(high_score_file);
-                while(scanner.hasNextLine()){
                     score = scanner.nextLine();
-                    high_score = Integer.parseInt(score);
-                }
+                    high_score = Integer.parseInt(score); 
                 scanner.close();
                 
             } catch (FileNotFoundException ex) {
