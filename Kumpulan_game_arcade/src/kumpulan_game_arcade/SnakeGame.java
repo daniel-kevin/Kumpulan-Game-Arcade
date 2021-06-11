@@ -70,6 +70,12 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
     public int menu_pick_num = 0;//untuk cek pilihan mana yang dipilih saat di Menu screen
     public AudioPlayer audioPlayer;//untuk play BGM
     
+    public Date startTime;
+    public long total_game_time;
+    public long t_game_h;
+    public long t_game_m;
+    public long t_game_s;
+    
     public SnakeGame(){
         addKeyListener(this);
         setFocusable(true);
@@ -78,6 +84,7 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
         game_state = State.Game;//state diawal di set langsung ke game
         audioPlayer = new AudioPlayer();
         audioPlayer.PlayBGM("Snake BGM.wav");//play BGMnya snake
+        startTime = new Date();
         timer = new Timer(delay, this);
         timer.start();
     }
@@ -170,6 +177,12 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
         //gameover
         for(int b = 1; b<lengthofsnake; b++){
             if(snakexlength[b] == snakexlength[0] && snakeylength[b] == snakeylength[0]){
+                Date endTime = new Date();
+                total_game_time = endTime.getTime() - startTime.getTime();
+                t_game_h = total_game_time/(60 * 60 * 1000) % 24;
+                t_game_m = total_game_time/(60 * 1000) % 60;
+                t_game_s = total_game_time/1000 % 60;
+                
                 right = false;
                 left = false;
                 up = false;
@@ -201,7 +214,7 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
                 try {
                     File high_score_file = new File("snake_score.txt");
                     fileWriter = new FileWriter(high_score_file,false);
-                    fileWriter.write(Integer.toString(score));
+                    fileWriter.write(Integer.toString(score)+"\n"+t_game_h+"\n"+t_game_m+"\n"+t_game_s);
                     fileWriter.close();
                 } catch (IOException ex) {
                     Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
