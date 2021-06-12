@@ -30,6 +30,7 @@ public class LeaderboardForm extends javax.swing.JFrame {
         Vector ci = new Vector();
         ci.add("Player");
         ci.add("Score");
+        ci.add("Waktu");
 
         tm = (DefaultTableModel) leaderboard.getModel();    // forcing to convert tm to DefaultTableModel to use swing table model 
                                                             // using type casting 
@@ -38,7 +39,6 @@ public class LeaderboardForm extends javax.swing.JFrame {
              // proses input 
              FileInputStream fs   = new FileInputStream(leaderboardFile);
              ObjectInputStream os = new ObjectInputStream(fs);
-             
              
              tm.setDataVector((Vector<Vector>) os.readObject(), ci);
 
@@ -98,14 +98,14 @@ public class LeaderboardForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Player", "Score"
+                "Player", "Score","Waktu"
             }
         ) {
             Class[] types = new Class [] {
                 java.lang.Object.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -153,8 +153,8 @@ public class LeaderboardForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnMainMenuActionPerformed
 
-    public void addPlayer(String playerName, int score){
-        tm.addRow(new Object[]{playerName, score});         // menambah row pada swing table dengan data baru 
+    public void addPlayer(String playerName, int score, String waktu){
+        tm.addRow(new Object[]{playerName, score, waktu});  // menambah row pada swing table dengan data baru 
         sorter.sort();                                      // sorting score player 
         
         saveLeaderboard();                                  // memanggil method untuk menyimpan score 

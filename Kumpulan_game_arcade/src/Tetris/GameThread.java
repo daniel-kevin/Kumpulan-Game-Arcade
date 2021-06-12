@@ -48,37 +48,9 @@ public class GameThread extends Thread{
                 }
             }
             
+            // game over state 
             if(ga.isBlockOutOfBounds()){
-                // show game over with JOptionPane
-                gf.audioPlayer.stop();
-                gf.dispose();
-                Tetris.gameOver(score);
-                
-                Date endTime = new Date();
-                long total_game_time = endTime.getTime() - startTime.getTime();
-                long t_game_h = total_game_time/(60 * 60 * 1000) % 24;
-                long t_game_m = total_game_time/(60 * 1000) % 60;
-                long t_game_s = total_game_time/1000 % 60;
-                
-                //update highscore kalau current score lebih tinggi dari highscore saat sudah game over
-                if(score > highscore){
-                FileWriter fileWriter = null;
-                    try {
-                        File high_score_file = new File("tetris_score.txt");
-                        fileWriter = new FileWriter(high_score_file,false);
-                        fileWriter.write(Integer.toString(score)+"\n"+t_game_h+"\n"+t_game_m+"\n"+t_game_s);
-                        fileWriter.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(Tetris.class.getName()).log(Level.SEVERE, null, ex);
-                    } finally {
-                        try {
-                            fileWriter.close();
-                        } catch (IOException ex) {
-                            Logger.getLogger(Tetris.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                HighScore();    //update variabel highscore
+                endGame();
                 break;
             }
             
@@ -95,6 +67,40 @@ public class GameThread extends Thread{
                 pause -= speedupPerLevel;           // menambah kecepatan game / mengurangi sleep time game
             }
         }
+    }
+    
+    public void endGame(){
+        // show game over with JOptionPane
+        gf.audioPlayer.stop();
+        gf.dispose();
+
+        Date endTime = new Date();
+        long total_game_time = endTime.getTime() - startTime.getTime();
+        long t_game_h = total_game_time/(60 * 60 * 1000) % 24;
+        long t_game_m = total_game_time/(60 * 1000) % 60;
+        long t_game_s = total_game_time/1000 % 60;
+
+        //update highscore kalau current score lebih tinggi dari highscore saat sudah game over
+        if(score > highscore){
+        FileWriter fileWriter = null;
+            try {
+                File high_score_file = new File("tetris_score.txt");
+                fileWriter = new FileWriter(high_score_file,false);
+                fileWriter.write(Integer.toString(score)+"\n"+t_game_h+"\n"+t_game_m+"\n"+t_game_s);
+                fileWriter.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Tetris.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    fileWriter.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Tetris.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        HighScore();    //update variabel highscore
+        String waktu = t_game_m+":"+t_game_s;
+        Tetris.gameOver(score, waktu);
     }
     
     //buat set isi dari variable highscore

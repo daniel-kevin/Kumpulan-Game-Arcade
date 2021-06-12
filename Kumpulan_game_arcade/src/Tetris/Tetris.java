@@ -21,13 +21,13 @@ public class Tetris {
     }
     
     // tampilan game over 
-    public static void gameOver(int score){
+    public static void gameOver(int score, String waktu){
         lf = new LeaderboardForm();
         gf = new GameForm();
         // menerima input nama player 
         String playerName = JOptionPane.showInputDialog("Game Over\nEnter Your Name : ");
         
-        lf.addPlayer(playerName, score);
+        lf.addPlayer(playerName, score, waktu);
         gf.dispose();
     }
     
