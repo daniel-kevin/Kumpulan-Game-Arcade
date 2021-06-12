@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -515,10 +516,9 @@ public class SnakeGame extends JPanel implements KeyListener, ActionListener{
         else{
             try {
                 Scanner scanner = new Scanner(high_score_file);
-                    while(scanner.hasNextLine()){
                         score = scanner.nextLine();
                         highscore = Integer.parseInt(score);
-                    }
+                    
                     scanner.close();
                 } catch (FileNotFoundException ex) {
                 Logger.getLogger(SnakeGame.class.getName()).log(Level.SEVERE, null, ex);
