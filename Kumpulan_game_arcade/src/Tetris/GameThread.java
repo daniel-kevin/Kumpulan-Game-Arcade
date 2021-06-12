@@ -18,6 +18,7 @@ public class GameThread extends Thread{
     private int scorePerLevel = 3;
     public static int highscore;
     public AudioPlayer audioPlayer;
+    public Date startTime;
     
     private int pause = 1000;
     private int speedupPerLevel = 100;
@@ -33,7 +34,7 @@ public class GameThread extends Thread{
     
     @Override
     public void run(){
-        Date startTime = new Date();
+        startTime = new Date();
         while(true){ 
             ga.spawnBlock();                // method memunculkan blok
             
